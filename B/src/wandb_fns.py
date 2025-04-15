@@ -18,6 +18,8 @@ from torch.utils.data import Subset
 from torch.nn import init
 from torchvision.transforms import InterpolationMode
 import wandb
+
+from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 def fine_tune(config=None):
     with wandb.init(config=config):
         
@@ -42,43 +44,33 @@ def fine_tune(config=None):
         trainer.fit(model, naturalist_DM)
 
 def fine_tune_manual(project="DL-Addignemt2_B_finetune",dropout=0,batch_size=64,dense_size=0,lr=1e-3):
-        
-    torch.manual_seed(3407)
-    torch.cuda.manual_seed(3407)
+ 
+
     early_stop_cb = EarlyStopping(
-    monitor="validation_loss",
-    min_delta=0.00,
-    patience=10,
-    verbose=True,
-    mode="min"
-)
-    checkpoint_cb = ModelCheckpoint(
         monitor="validation_loss",
-        mode="min",
-        save_top_k=1,
+        min_delta=0.00,
+        patience=10,
         verbose=True,
-        dirpath="checkpoints/",
-        filename="best-model"
+        mode="min"
     )
+    checkpoint_cb = ModelCheckpoint(
+    monitor="validation_loss",
+    mode="min",
+    save_top_k=1,
+    verbose=True,
+    dirpath="checkpoints/",
+    filename="best-model"
+    )
+
     wandb_logger = WandbLogger(project=project)
     # dropout=config.dropout
     # batch_size=config.batch_size
     # dene_size=config.dene_size
     # lr=config.lr
-    mean=[0.485, 0.456, 0.406] #from the transforms defined as default in pytorch for ViT
-    std=[0.229, 0.224, 0.225]#from the transforms defined as default in pytorch for ViT
-    train_transform = transforms.Compose([
-        transforms.Resize(256, interpolation=InterpolationMode.BILINEAR),
-        transforms.RandomResizedCrop(224),
-        transforms.RandomHorizontalFlip(),
-        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=mean, std=std)
-    ])
-    weights=torchvision.models.ViT_B_16_Weights.DEFAULT
-    auto_transforms=weights.transforms()
     model=VIT_iNaturalist_dense_only(lr=lr,dropout=dropout,dene_size=dense_size)
     naturalist_DM=iNaturalistDataModule_finetune(train_dir='inaturalist_12K/train',test_dir='inaturalist_12K/val',batch_size=batch_size,train_transforms=train_transform,test_transforms=auto_transforms)
     trainer = pl.Trainer(logger=wandb_logger, max_epochs=100,callbacks=[early_stop_cb,checkpoint_cb])
     trainer.fit(model, naturalist_DM)
+    best_model = VIT_iNaturalist_dense_only.load_from_checkpoint(checkpoint_cb.best_model_path)
+    trainer.test(best_model, datamodule=naturalist_DM)
     wandb.finish()
