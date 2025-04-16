@@ -1,9 +1,78 @@
 
 from model import iNaturalistModel
-from data import iNaturalistDataModule
+from data import iNaturalistDataModule, iNaturalistDataModule_new
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from pytorch_lightning.loggers import WandbLogger
+
+
+import torch
+import random
+import matplotlib.pyplot as plt
+from PIL import Image
+
+def show_random_predictions(model, dataset, class_names, device='cuda', num_samples=30, rows=3, cols=10):
+    model.eval()
+    indices = random.sample(range(len(dataset)), num_samples)
+    samples = [dataset[i] for i in indices]
+
+    fig, axes = plt.subplots(rows, cols, figsize=(20, 6))
+    axes = axes.flatten()
+
+    with torch.no_grad():
+        for i, (img, label, path) in enumerate(samples):
+            img_tensor = img.unsqueeze(0).to(device)  # add batch dim
+            output = model(img_tensor)
+            pred = output.argmax(dim=1).item()
+
+            # Load image again to plot (optional)
+            img_display = Image.open(path).convert("RGB")
+
+            ax = axes[i]
+            ax.imshow(img_display)
+            ax.axis("off")
+            ax.set_title(f"Pred: {class_names[pred]}\nActual: {class_names[label]}", fontsize=8)
+
+    plt.tight_layout()
+    plt.show()
+import random
+import torch
+from PIL import Image
+import wandb
+
+def log_random_predictions_separate(
+    model,
+    dataset,
+    class_names,
+    device='cuda',
+    num_samples=30,
+    key="random_preds"
+):
+
+    model.eval()
+    # 2. Pick random samples
+    indices = random.sample(range(len(dataset)), num_samples)
+    samples = [dataset[i] for i in indices]
+
+    # 3. Build list of wandb.Image
+    images_to_log = []
+    with torch.no_grad():
+        for img_tensor, label, path in samples:
+            # run model
+            inp = img_tensor.unsqueeze(0).to(device)
+            output = model(inp)
+            pred = output.argmax(dim=1).item()
+
+            # load for display
+            img = Image.open(path).convert("RGB")
+            caption = f"Pred: {class_names[pred]} / Actual: {class_names[label]}"
+            images_to_log.append(wandb.Image(img, caption=caption))
+
+    # 4. Log all images in one call
+    wandb.log({ key: images_to_log })
+
+
+
 
 def wandb_train(augment=True,activation_fun="SiLU",
     dense_size=1024,
@@ -91,4 +160,23 @@ def wandb_train(augment=True,activation_fun="SiLU",
     best_model = iNaturalistModel.load_from_checkpoint(checkpoint_cb.best_model_path)
     trainer.test(best_model, datamodule=naturalist_DM)
     trainer.test(best_model, datamodule=naturalist_DM)
+    device='cuda' if torch.cuda.is_available() else 'cpu'
+    naturalist_DM_new = iNaturalistDataModule_new(
+    train_dir='inaturalist_12K/train',
+    test_dir='inaturalist_12K/val',
+    batch_size=batch_size,
+    train_transforms=train_transforms,
+    test_transforms=test_transforms
+    )
+    naturalist_DM_new.setup()
+
+    class_names = naturalist_DM_new.test_dataset.classes
+    log_random_predictions_separate(
+        model,
+        naturalist_DM_new.test_dataset,     
+        class_names,    
+        device=device,
+        num_samples=30,
+        key="Model prediction"
+    )
     wandb.finish()

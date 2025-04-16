@@ -1,9 +1,11 @@
 import argparse
 
+import os
 from src.wandb_fn import wandb_train
 
 
 if __name__ == "__main__":
+    
     parser = argparse.ArgumentParser(description="Train a model with wandb logging.")
 
     parser.add_argument("--augment", action="store_true",help="Enable data augmentation")
@@ -20,6 +22,14 @@ if __name__ == "__main__":
     parser.add_argument("--filter_org", type=str, default="double",help="Filter organization strategy (default: double)")
     parser.add_argument("--batch_size", type=int, default=64,help="Batch size for training (default: 64)")
     args = parser.parse_args()
+
+    os.makedirs("src", exist_ok=True)
+    if not os.path.exists("src/nature_12K"):
+        print("Downloading and extracting nature_12K dataset into src/...")
+        os.system("wget -O src/nature_12K.zip https://storage.googleapis.com/wandb_datasets/nature_12K.zip")
+        os.system("unzip -q src/nature_12K.zip -d src/")
+    else:
+        print("Dataset already exists in src/. Skipping download.")
 
     wandb_train(
         augment=args.augment,

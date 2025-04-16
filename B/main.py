@@ -2,8 +2,17 @@ import argparse
 
 from src.wandb_fns import fine_tune_manual
 
+import os
 
 if __name__ == "__main__":
+    os.makedirs("src", exist_ok=True)
+    if not os.path.exists("src/nature_12K"):
+        print("Downloading and extracting nature_12K dataset into src/...")
+        os.system("wget -O src/nature_12K.zip https://storage.googleapis.com/wandb_datasets/nature_12K.zip")
+        os.system("unzip -q src/nature_12K.zip -d src/")
+    else:
+        print("Dataset already exists in src/. Skipping download.")
+
     parser = argparse.ArgumentParser(description="Fine-tune a deep learning model manually.")
     parser.add_argument("--project", type=str, default="DL-Addignemt2_B_finetune",help="Name of the project (default: DL-Addignemt2_B_finetune)")
     parser.add_argument("--dropout", type=float, default=0,help="Dropout rate (default: 0)")
