@@ -1,18 +1,6 @@
-import os, random,torch,torchvision
+import torch
 import torch.nn as nn
-import torch.functional as F
-import torch.optim as optim
 import pytorch_lightning as pl
-from torchvision import transforms, datasets
-from PIL import Image
-from torch.utils.data import DataLoader, random_split
-from torchvision import models
-from pytorch_lightning.loggers import WandbLogger
-from torchvision.datasets import ImageFolder
-from torch.utils.data import Subset
-from torch.nn import init
-from torchvision import transforms
-from torchvision.transforms import InterpolationMode
 class iNaturalistModel(pl.LightningModule):
     def __init__(self, in_channels=3,input_size=(224, 224),dense_size=512,  num_filters_layer: list = [16, 32, 64, 128, 256],filter_size: list = [3, 3, 3, 3, 3], stride=1,  padding=1, num_classes=10,activation=nn.ReLU,dropout_rate=0,optimizer=torch.optim.Adam,lr=0.001,batch_norm=False ):
         super().__init__()

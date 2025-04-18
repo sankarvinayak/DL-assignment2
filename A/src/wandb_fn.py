@@ -5,7 +5,7 @@ import pytorch_lightning as pl
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from pytorch_lightning.loggers import WandbLogger
 import wandb
-from torchvision import transforms, datasets
+from torchvision import transforms
 import random
 import torch
 from PIL import Image
