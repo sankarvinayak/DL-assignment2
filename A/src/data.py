@@ -2,8 +2,12 @@ import torch
 import pytorch_lightning as pl
 from torchvision import transforms, datasets
 from torch.utils.data import DataLoader, random_split
+from torchvision.datasets import ImageFolder
 from torchvision import transforms
 class iNaturalistDataModule(pl.LightningDataModule):
+    """Pytorch lightning based datamodule read data from the path and split the train into 80% train and 20% validation and the test data from corresponding directory
+      apply the transforms defined for each set and returns the dataloser
+    """
     def __init__(self, train_dir: str,test_dir: str, batch_size: int=128, num_workers: int = 2,train_transforms=transforms.ToTensor(), test_transforms=transforms.ToTensor(), train_val_split: float = 0.8,seed=3407):
       super().__init__()
 
@@ -45,7 +49,8 @@ class ImageFolderWithPaths(ImageFolder):
         path = self.imgs[index][0]
         return original_tuple + (path,)
 
-class iNaturalistDataModule_new(pl.LightningDataModule):
+class iNaturalistDataModule_with_cls_name(pl.LightningDataModule):
+    """Same as previous class but also using folder name pass the class names"""
     def __init__(self, train_dir: str,test_dir: str, batch_size: int=128, num_workers: int = 2,train_transforms=transforms.ToTensor(), test_transforms=transforms.ToTensor(), train_val_split: float = 0.8,seed=3407):
       super().__init__()
 

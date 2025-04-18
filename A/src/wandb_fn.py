@@ -1,5 +1,5 @@
 
-from .data import iNaturalistDataModule, iNaturalistDataModule_new
+from .data import iNaturalistDataModule, iNaturalistDataModule_with_cls_name
 from .model import iNaturalistModel
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
@@ -17,21 +17,18 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 def show_random_predictions(model, dataset, class_names, device='cuda', num_samples=30, rows=3, cols=10):
+    """Function which shows the model prediciton """
     model.eval()
     indices = random.sample(range(len(dataset)), num_samples)
     samples = [dataset[i] for i in indices]
-
     fig, axes = plt.subplots(rows, cols, figsize=(20, 6))
     axes = axes.flatten()
-
     with torch.no_grad():
         for i, (img, label, path) in enumerate(samples):
             img_tensor = img.unsqueeze(0).to(device)  
             output = model(img_tensor)
             pred = output.argmax(dim=1).item()
-
             img_display = Image.open(path).convert("RGB")
-
             ax = axes[i]
             ax.imshow(img_display)
             ax.axis("off")
@@ -40,15 +37,8 @@ def show_random_predictions(model, dataset, class_names, device='cuda', num_samp
     plt.tight_layout()
     plt.show()
 
-def log_random_predictions_separate(
-    model,
-    dataset,
-    class_names,
-    device='cuda',
-    num_samples=30,
-    key="random_preds"
-):
-
+def log_random_predictions_separate( model, dataset,class_names,device='cuda', num_samples=30,key="random_preds"):
+    """Function which log grid of 30 images to wandb"""
     model.eval().to(device)
     indices = random.sample(range(len(dataset)), num_samples)
     samples = [dataset[i] for i in indices]
@@ -66,12 +56,8 @@ def log_random_predictions_separate(
 
 
 
-def wandb_train(project="DL-Addignemt2_A",augment=True,activation_fun="SiLU",
-    dense_size=1024,
-    dropout=0.5,
-    epoch=50,lr=0.0001,
-    num_filters=32,
-    filter_size=3,filter_org="double",batch_size=64,batch_norm=True):
+def wandb_train(project="DL-Addignemt2_A",augment=True,activation_fun="SiLU",dense_size=1024,dropout=0.5,epoch=50,lr=0.0001,num_filters=32,filter_size=3,filter_org="double",batch_size=64,batch_norm=True):
+   
     if augment: #did try with single augmentations techniques but from experiments it is seen that combining different augmentations techniques helps in improving performance hence a set of augmentations which are commonly used for different model for imagenet dataset(like ViT,VGG,EffNet etc) is used here in wandb initial few runs does have single augmentation technique logged
         train_transforms = transforms.Compose([
             transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),#make all the images into same shape 224x224
@@ -132,7 +118,7 @@ def wandb_train(project="DL-Addignemt2_A",augment=True,activation_fun="SiLU",
     trainer.test(best_model, datamodule=naturalist_DM)
     # trainer.test(best_model, datamodule=naturalist_DM)
     device='cuda' if torch.cuda.is_available() else 'cpu'
-    naturalist_DM_new = iNaturalistDataModule_new(
+    naturalist_DM_new = iNaturalistDataModule_with_cls_name(
     train_dir='src/inaturalist_12K/train',
     test_dir='src/inaturalist_12K/val',
     batch_size=batch_size,

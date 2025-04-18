@@ -2,6 +2,9 @@ import torch
 import torch.nn as nn
 import pytorch_lightning as pl
 class iNaturalistModel(pl.LightningModule):
+    """Pytorch lightming module which inherits nn.Module which is used for network in pytrch
+        construct the network of specification and store as part of the class object
+    """
     def __init__(self, in_channels=3,input_size=(224, 224),dense_size=512,  num_filters_layer: list = [16, 32, 64, 128, 256],filter_size: list = [3, 3, 3, 3, 3], stride=1,  padding=1, num_classes=10,activation=nn.ReLU,dropout_rate=0,optimizer=torch.optim.Adam,lr=0.001,batch_norm=False ):
         super().__init__()
         self.save_hyperparameters()
@@ -32,6 +35,7 @@ class iNaturalistModel(pl.LightningModule):
     def forward(self, x):
         return self.model(x)
     def training_step(self, batch, batch_idx):
+        """Will be called while training model.fit"""
         images, labels = batch
         logits = self.forward(images)
         loss = nn.functional.cross_entropy(logits, labels)
@@ -41,6 +45,7 @@ class iNaturalistModel(pl.LightningModule):
         self.log("train_loss", loss, prog_bar=True)
         return loss
     def validation_step(self, batch, batch_idx):
+        """Will be clalled while validation model.fit"""
         images, labels = batch
         logits = self.forward(images)
         loss = nn.functional.cross_entropy(logits, labels)
@@ -50,6 +55,7 @@ class iNaturalistModel(pl.LightningModule):
         self.log("validation_loss", loss, prog_bar=True)
         return {"validation_loss":loss,"validation_acc":acc}
     def test_step(self, batch, batch_idx):
+        """Will be called while testing model.test"""
         images, labels = batch
         logits = self.forward(images)
         loss = nn.functional.cross_entropy(logits, labels)

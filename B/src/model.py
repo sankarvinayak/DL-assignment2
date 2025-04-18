@@ -12,9 +12,15 @@ from torchvision.datasets import ImageFolder
 from torch.utils.data import Subset
 from torch.nn import init
 
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+
 
 from torchvision import models
 class VIT_iNaturalist_dense_only(pl.LightningModule):
+    
+    """Use the Vision transformer as the base model and modify the fully connected layer to suit the needs,
+    if the dense size is mentioned as 0 the output of the transformer block will the directly connected to the final output neuron else there will be a fully connected set of neurons in between
+    """
     def __init__(self,num_classes=10,optimizer=torch.optim.Adam,lr=0.001,weights=models.ViT_B_16_Weights.DEFAULT,dropout=0.5,dene_size=0,weight_decay=0):
       super().__init__()
       self.save_hyperparameters()
@@ -60,4 +66,13 @@ class VIT_iNaturalist_dense_only(pl.LightningModule):
         return {"test_loss":loss,"test_acc":acc}
     def configure_optimizers(self):
         return self.optimizer(self.model.parameters(), lr=self.lr,weight_decay=self.weight_decay)
-        
+        # scheduler = ReduceLROnPlateau(optimizer, mode='min', patience=2, factor=0.5) #do seems to work good but not used for majority of the runs so commented out
+        # return {
+        #     "optimizer": optimizer,
+        #     "lr_scheduler": {
+        #         "scheduler": scheduler,
+        #         "monitor": "validation_loss",  # name of metric to monitor
+        #         "interval": "epoch",
+        #         "frequency": 1
+        #     }
+        # }

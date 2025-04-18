@@ -1,5 +1,5 @@
 from .model import VIT_iNaturalist_dense_only
-from .data import iNaturalistDataModule_finetune
+from .data import iNaturalistDataModule_finetune, iNaturalistDataModule_with_cls_name
 
 import random
 import torch,torchvision
@@ -12,6 +12,8 @@ from pytorch_lightning.loggers import WandbLogger
 import torch
 import wandb
 
+from PIL import Image
+
 def log_random_predictions_separate(
     model,
     dataset,
@@ -20,8 +22,7 @@ def log_random_predictions_separate(
     num_samples=30,
     key="random_preds"
 ):
-
-    
+    """Function which log grid of 30 images to wandb"""
     model.eval().to(device)
     indices = random.sample(range(len(dataset)), num_samples)
     samples = [dataset[i] for i in indices]
@@ -38,6 +39,9 @@ def log_random_predictions_separate(
 
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 def fine_tune(config=None):
+    """Function which was ran as part of wandb runs 
+    given sweep config it will create and run the model based on the config
+    """
     with wandb.init(config=config):
         torch.manual_seed(3407)
         torch.cuda.manual_seed(3407)
@@ -65,6 +69,12 @@ def fine_tune(config=None):
         trainer = pl.Trainer(logger=wandb_logger, max_epochs=100,callbacks=[early_stop_cb])
         trainer.fit(model, naturalist_DM)
 def fine_tune_manual(project="DL-Addignemt2_B_finetune",dropout=0,batch_size=64,dense_size=0,lr=1e-3,epochs=10):
+    """By passing arguments from the cli it create a class which make use of torchviion ViT model and its weights
+    For training small modifications to the original transforms defined with the model is applied and for validation and test set the origianal transforms directly used
+    Early stopping callback will terminate the training if the validation loss keep on increasing for more than 10 steps
+    Checkpoint callback save the best model
+    once training is completed the prediciton of test model is made from the model which was having least validation loss 
+    """
     mean=[0.485, 0.456, 0.406]
     std=[0.229, 0.224, 0.225]
     train_transform = transforms.Compose([
@@ -87,7 +97,15 @@ def fine_tune_manual(project="DL-Addignemt2_B_finetune",dropout=0,batch_size=64,
     trainer.fit(model, naturalist_DM)
     best_model = VIT_iNaturalist_dense_only.load_from_checkpoint(checkpoint_cb.best_model_path)
     trainer.test(best_model, datamodule=naturalist_DM)
-    class_names = naturalist_DM.test_dataset.classes
     device='cuda' if torch.cuda.is_available() else 'cpu'
-    log_random_predictions_separate(best_model,naturalist_DM.test_dataset,class_names,device=device,num_samples=30,key="Model prediction")
+    naturalist_DM_new = iNaturalistDataModule_with_cls_name(
+    train_dir='src/inaturalist_12K/train',
+    test_dir='src/inaturalist_12K/val',
+    batch_size=batch_size,
+    train_transforms=train_transform,
+    test_transforms=auto_transforms
+    )
+    naturalist_DM_new.setup()
+    class_names = naturalist_DM_new.test_dataset.classes
+    log_random_predictions_separate(best_model,naturalist_DM_new.test_dataset,class_names,device=device,num_samples=30,key="Model prediction")
     wandb.finish()
