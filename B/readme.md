@@ -2,11 +2,11 @@
 
 # DL assignment 2 B
 
-## 🌿 iNaturalist Image Classification with ViT  
+##  iNaturalist Image Classification with ViT  
 
 ---
 
-## 📚 Overview
+##  Overview
 
 This project fine-tunes a **Vision Transformer (ViT)** model on the [iNaturalist 12K dataset](https://storage.googleapis.com/wandb_datasets/nature_12K.zip) for multi-class image classification.
 
@@ -17,7 +17,7 @@ It uses:
 
 ---
 
-## 🧾 Project Structure
+##  Project Structure
 
 ```
 .
@@ -31,17 +31,14 @@ It uses:
 
 ---
 
-## 🖼 Dataset
+## Dataset
 
-- 📦 Downloaded automatically from:  
+-  Downloaded automatically from:  
   `https://storage.googleapis.com/wandb_datasets/nature_12K.zip`
-
-- 📁 Extracted to:  
-  `src/inaturalist_12K/`
 
 ---
 
-## 🚀 How to Run
+## How to Run
 
 
 
@@ -66,7 +63,7 @@ python main.py --project ViT-iNaturalist --dropout 0.2 --batch_size 512  --dense
 
 ---
 
-## 🧠 Pretrained model
+##  Pretrained model
 
 - Make use of `vit_b_16` from torchvision models
 - Optional dense layer with dropout
@@ -74,7 +71,7 @@ python main.py --project ViT-iNaturalist --dropout 0.2 --batch_size 512  --dense
 
 ---
 
-## 📊 WandB Logging
+##  WandB Logging
 
 The training script logs the following to Weights & Biases:
 
