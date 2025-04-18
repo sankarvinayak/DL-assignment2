@@ -1,8 +1,8 @@
 
 # DL assignment Part A
-## 🌿 iNaturalist ConvNet Classifier from Scratch  
+##  iNaturalist ConvNet Classifier from Scratch  
 
-## 🧾 Project Structure
+## Project Structure
 
 ```
 .
@@ -16,14 +16,14 @@
 
 ---
 
-## 📦 Dataset
+##  Dataset
 
 - Downloads the **iNaturalist_12K** dataset automatically if not already in `src/inaturalist_12K/`
 
 
 ---
 
-## 🚀 How to Run Training
+##  How to Run Training
 
 Run the model with any configuration of your choice:
 
@@ -33,7 +33,7 @@ python main.py --project ConvNet-Nature12K  --dropout 0.3  --batch_size 128  --l
 
 ---
 
-## ⚙️ Available Arguments
+## ⚙ Available Arguments
 
 | Argument            | Description                                                    | Default         |
 |---------------------|----------------------------------------------------------------|-----------------|
@@ -52,7 +52,7 @@ python main.py --project ConvNet-Nature12K  --dropout 0.3  --batch_size 128  --l
 
 ---
 
-## 🧠 Model Highlights
+##  Model Properties
 
 - Fully configurable ConvNet
 - Custom activation and dropout support
@@ -63,7 +63,7 @@ python main.py --project ConvNet-Nature12K  --dropout 0.3  --batch_size 128  --l
 
 ---
 
-## 🧪 Weights & Biases Integration
+## Weights & Biases Integration
 
 Automatically logs:
 - Training and validation accuracy/loss
