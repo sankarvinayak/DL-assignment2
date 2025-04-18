@@ -9,3 +9,7 @@ This directory contain information about training the model using pretrained Vis
 
 -----
 Before trying the code install the requirements in `requirements.txt`
+
+
+-----
+[Wandb report](https://wandb.ai/cs24m041-iit-madras/DA6401-Assignment2/reports/DA6401-Assignment-2--VmlldzoxMjAzNTUzNA?accessToken=pvuaifa3kvtlvgihqg4d87n1l6ddmj2w3dri9xvoix5rpxbhui31wd1pkdskjf64) associated can be found here
