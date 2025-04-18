@@ -60,4 +60,4 @@ class VIT_iNaturalist_dense_only(pl.LightningModule):
         return {"test_loss":loss,"test_acc":acc}
     def configure_optimizers(self):
         return self.optimizer(self.model.parameters(), lr=self.lr,weight_decay=self.weight_decay)
-    
+        

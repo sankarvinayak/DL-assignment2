@@ -49,7 +49,7 @@ def log_random_predictions_separate(
     key="random_preds"
 ):
 
-    model.eval().to(device)=
+    model.eval().to(device)
     indices = random.sample(range(len(dataset)), num_samples)
     samples = [dataset[i] for i in indices]
     images_to_log = []
@@ -72,7 +72,7 @@ def wandb_train(project="DL-Addignemt2_A",augment=True,activation_fun="SiLU",
     epoch=50,lr=0.0001,
     num_filters=32,
     filter_size=3,filter_org="double",batch_size=64,batch_norm=True):
-    if augment:
+    if augment: #did try with single augmentations techniques but from experiments it is seen that combining different augmentations techniques helps in improving performance hence a set of augmentations which are commonly used for different model for imagenet dataset(like ViT,VGG,EffNet etc) is used here in wandb initial few runs does have single augmentation technique logged
         train_transforms = transforms.Compose([
             transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),#make all the images into same shape 224x224
             transforms.RandomHorizontalFlip(p=0.5), #with probab
@@ -130,7 +130,7 @@ def wandb_train(project="DL-Addignemt2_A",augment=True,activation_fun="SiLU",
     trainer.fit(model, naturalist_DM)
     best_model = iNaturalistModel.load_from_checkpoint(checkpoint_cb.best_model_path)
     trainer.test(best_model, datamodule=naturalist_DM)
-    trainer.test(best_model, datamodule=naturalist_DM)
+    # trainer.test(best_model, datamodule=naturalist_DM)
     device='cuda' if torch.cuda.is_available() else 'cpu'
     naturalist_DM_new = iNaturalistDataModule_new(
     train_dir='src/inaturalist_12K/train',
@@ -141,5 +141,5 @@ def wandb_train(project="DL-Addignemt2_A",augment=True,activation_fun="SiLU",
     )
     naturalist_DM_new.setup()
     class_names = naturalist_DM_new.test_dataset.classes
-    log_random_predictions_separate(model,naturalist_DM_new.test_dataset,class_names,device=device,num_samples=30,key="Model prediction")
+    log_random_predictions_separate(best_model,naturalist_DM_new.test_dataset,class_names,device=device,num_samples=30,key="Model prediction")
     wandb.finish()
