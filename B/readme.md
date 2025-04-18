@@ -21,12 +21,12 @@ It uses:
 
 ```
 .
-├── main.py                  # Entry point to download data and run training
-├── readme.md                # Project description and usage
+├── main.py                  
+├── readme.md                
 └── src/
-    ├── data.py              # DataModule definition (train/val/test loaders)
-    ├── model.py             # ViT-based classifier wrapped in LightningModule
-    └── wandb_fns.py         # wandb logging utilities (e.g. predictions)
+    ├── data.py              
+    ├── model.py             
+    └── wandb_fns.py         
 ```
 
 ---
