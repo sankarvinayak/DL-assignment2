@@ -6,12 +6,12 @@
 
 ```
 .
-├── main.py            # Entry point to train the model from scratch
-├── readme.md          # Project documentation
+├── main.py            
+├── readme.md          
 └── src
-    ├── data.py        # DataModule for iNaturalist dataset
-    ├── model.py       # PyTorch Lightning model with CNN architecture
-    └── wandb_fn.py    # wandb_train() function with training logic
+    ├── data.py        
+    ├── model.py      
+    └── wandb_fn.py   
 ```
 
 ---
