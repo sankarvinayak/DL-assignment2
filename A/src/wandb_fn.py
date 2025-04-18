@@ -1,10 +1,15 @@
 
-from model import iNaturalistModel
-from data import iNaturalistDataModule, iNaturalistDataModule_new
+from .data import iNaturalistDataModule, iNaturalistDataModule_new
+from .model import iNaturalistModel
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from pytorch_lightning.loggers import WandbLogger
-
+import wandb
+from torchvision import transforms, datasets
+import random
+import torch
+from PIL import Image
+import wandb
 
 import torch
 import random
@@ -21,11 +26,10 @@ def show_random_predictions(model, dataset, class_names, device='cuda', num_samp
 
     with torch.no_grad():
         for i, (img, label, path) in enumerate(samples):
-            img_tensor = img.unsqueeze(0).to(device)  # add batch dim
+            img_tensor = img.unsqueeze(0).to(device)  
             output = model(img_tensor)
             pred = output.argmax(dim=1).item()
 
-            # Load image again to plot (optional)
             img_display = Image.open(path).convert("RGB")
 
             ax = axes[i]
@@ -35,10 +39,6 @@ def show_random_predictions(model, dataset, class_names, device='cuda', num_samp
 
     plt.tight_layout()
     plt.show()
-import random
-import torch
-from PIL import Image
-import wandb
 
 def log_random_predictions_separate(
     model,
@@ -49,7 +49,7 @@ def log_random_predictions_separate(
     key="random_preds"
 ):
 
-    model.eval()
+    model.eval().to(device)
     # 2. Pick random samples
     indices = random.sample(range(len(dataset)), num_samples)
     samples = [dataset[i] for i in indices]
@@ -74,12 +74,12 @@ def log_random_predictions_separate(
 
 
 
-def wandb_train(augment=True,activation_fun="SiLU",
+def wandb_train(project="DL-Addignemt2_A",augment=True,activation_fun="SiLU",
     dense_size=1024,
     dropout=0.5,
     epoch=50,lr=0.0001,
     num_filters=32,
-    filter_size=3,filter_org="double",batch_size=64):
+    filter_size=3,filter_org="double",batch_size=64,batch_norm=True):
     if augment:
         train_transforms = transforms.Compose([
             transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),#make all the images into same shape 224x224
@@ -114,27 +114,25 @@ def wandb_train(augment=True,activation_fun="SiLU",
       activation=torch.nn.SiLU
     elif activation_fun=="Mish":
       activation=torch.nn.Mish
-    if batch_norm=="Yes":
-       batch_norm=True
-    else:
-       batch_norm=False
+   
+    wandb.login()
     num_filters_layer=[num_filters,num_filters*2,num_filters*4,num_filters*8,num_filters*16]if filter_org=="double" else [num_filters]*5
     early_stop_cb = EarlyStopping(monitor="validation_loss",min_delta=0.00,patience=10,verbose=True,mode="min") #early stopping callback which will terminate the training if the validation does not decrease for 10 consecutive steps
     checkpoint_cb = ModelCheckpoint(monitor="validation_loss", mode="min",save_top_k=1,verbose=True,dirpath="checkpoints/",filename="best-model") #save the model when the loss it at lowest and finally return the result of this best model
     num_filters_layer=[num_filters,num_filters*2,num_filters*4,num_filters*8,num_filters*16]
     # num_filters_layer=[num_filters]*5
-    if len(filter_size)==1:
-      filter_sizes=[filter_size]*5
-    else:
-       filter_sizes=filter_size
+    # if len(filter_size)==1:
+    filter_sizes=[filter_size]*5
+    # else:
+    #    filter_sizes=filter_size
     # filter_sizes=filter_size
     run_name = f"Augment{augment}activation_fun{activation_fun}_dropout_{dropout}"
     torch.manual_seed(3407)
     torch.cuda.manual_seed(3407)
-    wandb_logger = WandbLogger(project="DL-Addignemt2_A",name=run_name)
+    wandb_logger = WandbLogger(project=project,name=run_name)
 
     model = iNaturalistModel(num_filters_layer=num_filters_layer,activation=activation,dropout_rate=dropout,batch_norm=batch_norm,filter_size=filter_sizes,dense_size=dense_size,lr=lr)
-    naturalist_DM=iNaturalistDataModule(train_dir='inaturalist_12K/train',test_dir='inaturalist_12K/val',batch_size=batch_size,train_transforms=train_transforms,test_transforms=test_transforms)
+    naturalist_DM=iNaturalistDataModule(train_dir='src/inaturalist_12K/train',test_dir='src/inaturalist_12K/val',batch_size=batch_size,train_transforms=train_transforms,test_transforms=test_transforms)
 
     trainer = pl.Trainer(logger=wandb_logger, max_epochs=epoch,callbacks=[early_stop_cb,checkpoint_cb])
     trainer.fit(model, naturalist_DM)
@@ -143,8 +141,8 @@ def wandb_train(augment=True,activation_fun="SiLU",
     trainer.test(best_model, datamodule=naturalist_DM)
     device='cuda' if torch.cuda.is_available() else 'cpu'
     naturalist_DM_new = iNaturalistDataModule_new(
-    train_dir='inaturalist_12K/train',
-    test_dir='inaturalist_12K/val',
+    train_dir='src/inaturalist_12K/train',
+    test_dir='src/inaturalist_12K/val',
     batch_size=batch_size,
     train_transforms=train_transforms,
     test_transforms=test_transforms

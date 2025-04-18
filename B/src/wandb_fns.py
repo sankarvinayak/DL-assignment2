@@ -1,5 +1,5 @@
-from model import VIT_iNaturalist_dense_only
-from data import iNaturalistDataModule_finetune
+from .model import VIT_iNaturalist_dense_only
+from .data import iNaturalistDataModule_finetune
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import EarlyStopping
 from pytorch_lightning.loggers import WandbLogger

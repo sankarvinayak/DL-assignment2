@@ -7,7 +7,10 @@ from src.wandb_fn import wandb_train
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description="Train a model with wandb logging.")
+    parser.add_argument("--project", type=str, default="default_project", help="WandB project name")
 
+    parser.add_argument("--batch_norm", action="store_true",help="Enable batch_norm")
+    parser.set_defaults(augment=True)
     parser.add_argument("--augment", action="store_true",help="Enable data augmentation")
     parser.add_argument("--no-augment", dest="augment", action="store_false",help="Disable data augmentation")
     parser.set_defaults(augment=True)
@@ -23,15 +26,20 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int, default=64,help="Batch size for training (default: 64)")
     args = parser.parse_args()
 
-    os.makedirs("src", exist_ok=True)
-    if not os.path.exists("src/nature_12K"):
+    
+    dataset_dir = "src/inaturalist_12K"
+    dataset_zip = "src/nature_12K.zip"
+
+    if not os.path.exists(dataset_dir):
+        os.makedirs("src", exist_ok=True)
         print("Downloading and extracting nature_12K dataset into src/...")
-        os.system("wget -O src/nature_12K.zip https://storage.googleapis.com/wandb_datasets/nature_12K.zip")
-        os.system("unzip -q src/nature_12K.zip -d src/")
+        os.system(f"wget -O {dataset_zip} https://storage.googleapis.com/wandb_datasets/nature_12K.zip")
+        os.system(f"unzip -q {dataset_zip} -d src/")
     else:
         print("Dataset already exists in src/. Skipping download.")
 
     wandb_train(
+        project=args.project,
         augment=args.augment,
         activation_fun=args.activation_fun,
         dense_size=args.dense_size,
@@ -41,5 +49,6 @@ if __name__ == "__main__":
         num_filters=args.num_filters,
         filter_size=args.filter_size,
         filter_org=args.filter_org,
-        batch_size=args.batch_size
+        batch_size=args.batch_size,
+        batch_norm=args.batch_norm
     )
