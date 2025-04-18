@@ -82,32 +82,30 @@ def wandb_train(augment=True,activation_fun="SiLU",
     filter_size=3,filter_org="double",batch_size=64):
     if augment:
         train_transforms = transforms.Compose([
-            transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),
-            transforms.RandomHorizontalFlip(p=0.5),
+            transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),#make all the images into same shape 224x224
+            transforms.RandomHorizontalFlip(p=0.5), #with probab
             transforms.RandomApply([transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1)], p=0.3),
-            transforms.RandomRotation(degrees=15),
+            transforms.RandomRotation(degrees=15),  #randomly rotate the image by a small degree 
             transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
             transforms.RandomPerspective(distortion_scale=0.2, p=0.3),
             transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),])
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),]) #imagenet mean and standard deviation used in many placess
         test_transforms = transforms.Compose([
         transforms.Resize(256),            
         transforms.CenterCrop(224),        
         transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406],
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], #similar to default transforms of ViT which is used in the part B and seems to give better perfomance than using .5 directly 
                             std=[0.229, 0.224, 0.225]),
     ])
     else:
       train_transforms = transforms.Compose([
-      transforms.Resize((224,224)),
+      transforms.Resize((224,224)), #convert to fixed size 224x224
       transforms.ToTensor(),
       transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),])
       test_transforms = transforms.Compose([
       transforms.Resize((224,224)),
       transforms.ToTensor(),
-      transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),])
-    
-
+      transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),])  #use same set of train and test transforms if data augmentation is not enabled
     if activation_fun=="ReLU":
       activation=torch.nn.ReLU
     elif activation_fun=="GELU":
@@ -115,38 +113,21 @@ def wandb_train(augment=True,activation_fun="SiLU",
     elif activation_fun=="SiLU":
       activation=torch.nn.SiLU
     elif activation_fun=="Mish":
-      activation=nn.Mish
+      activation=torch.nn.Mish
     if batch_norm=="Yes":
        batch_norm=True
     else:
        batch_norm=False
-
-    
     num_filters_layer=[num_filters,num_filters*2,num_filters*4,num_filters*8,num_filters*16]if filter_org=="double" else [num_filters]*5
-
-
-
-    early_stop_cb = EarlyStopping(
-        monitor="validation_loss",
-        min_delta=0.00,
-        patience=10,
-        verbose=True,
-        mode="min"
-    )
-    checkpoint_cb = ModelCheckpoint(
-        monitor="validation_loss",
-        mode="min",
-        save_top_k=1,
-        verbose=True,
-        dirpath="checkpoints/",
-        filename="best-model"
-    )
-
-
+    early_stop_cb = EarlyStopping(monitor="validation_loss",min_delta=0.00,patience=10,verbose=True,mode="min") #early stopping callback which will terminate the training if the validation does not decrease for 10 consecutive steps
+    checkpoint_cb = ModelCheckpoint(monitor="validation_loss", mode="min",save_top_k=1,verbose=True,dirpath="checkpoints/",filename="best-model") #save the model when the loss it at lowest and finally return the result of this best model
     num_filters_layer=[num_filters,num_filters*2,num_filters*4,num_filters*8,num_filters*16]
     # num_filters_layer=[num_filters]*5
-    filter_sizes=[filter_size]*5
-
+    if len(filter_size)==1:
+      filter_sizes=[filter_size]*5
+    else:
+       filter_sizes=filter_size
+    # filter_sizes=filter_size
     run_name = f"Augment{augment}activation_fun{activation_fun}_dropout_{dropout}"
     torch.manual_seed(3407)
     torch.cuda.manual_seed(3407)
@@ -169,14 +150,6 @@ def wandb_train(augment=True,activation_fun="SiLU",
     test_transforms=test_transforms
     )
     naturalist_DM_new.setup()
-
     class_names = naturalist_DM_new.test_dataset.classes
-    log_random_predictions_separate(
-        model,
-        naturalist_DM_new.test_dataset,     
-        class_names,    
-        device=device,
-        num_samples=30,
-        key="Model prediction"
-    )
+    log_random_predictions_separate(model,naturalist_DM_new.test_dataset,class_names,device=device,num_samples=30,key="Model prediction")
     wandb.finish()
