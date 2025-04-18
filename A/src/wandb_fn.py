@@ -49,26 +49,18 @@ def log_random_predictions_separate(
     key="random_preds"
 ):
 
-    model.eval().to(device)
-    # 2. Pick random samples
+    model.eval().to(device)=
     indices = random.sample(range(len(dataset)), num_samples)
     samples = [dataset[i] for i in indices]
-
-    # 3. Build list of wandb.Image
     images_to_log = []
     with torch.no_grad():
         for img_tensor, label, path in samples:
-            # run model
             inp = img_tensor.unsqueeze(0).to(device)
             output = model(inp)
             pred = output.argmax(dim=1).item()
-
-            # load for display
             img = Image.open(path).convert("RGB")
             caption = f"Pred: {class_names[pred]} / Actual: {class_names[label]}"
             images_to_log.append(wandb.Image(img, caption=caption))
-
-    # 4. Log all images in one call
     wandb.log({ key: images_to_log })
 
 
