@@ -7,4 +7,5 @@ The directory A contains information about training from scratch of the 5 layer 
 ## Part B
 This directory contain information about training the model using pretrained Vision transformer model and finetuning it for the use case
 
-
+-----
+Before trying the code install the requirements in `requirements.txt`

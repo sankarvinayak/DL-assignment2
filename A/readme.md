@@ -1,29 +1,29 @@
 
 # DL assignment Part A
-## 🌿 iNaturalist ConvNet Classifier from Scratch  
+##  iNaturalist ConvNet Classifier from Scratch  
 
-## 🧾 Project Structure
+## Project Structure
 
 ```
 .
-├── main.py            # Entry point to train the model from scratch
-├── readme.md          # Project documentation
+├── main.py            
+├── readme.md          
 └── src
-    ├── data.py        # DataModule for iNaturalist dataset
-    ├── model.py       # PyTorch Lightning model with CNN architecture
-    └── wandb_fn.py    # wandb_train() function with training logic
+    ├── data.py        
+    ├── model.py      
+    └── wandb_fn.py   
 ```
 
 ---
 
-## 📦 Dataset
+##  Dataset
 
 - Downloads the **iNaturalist_12K** dataset automatically if not already in `src/inaturalist_12K/`
 
 
 ---
 
-## 🚀 How to Run Training
+##  How to Run Training
 
 Run the model with any configuration of your choice:
 
@@ -33,7 +33,7 @@ python main.py --project ConvNet-Nature12K  --dropout 0.3  --batch_size 128  --l
 
 ---
 
-## ⚙️ Available Arguments
+## Arguments
 
 | Argument            | Description                                                    | Default         |
 |---------------------|----------------------------------------------------------------|-----------------|
@@ -52,18 +52,8 @@ python main.py --project ConvNet-Nature12K  --dropout 0.3  --batch_size 128  --l
 
 ---
 
-## 🧠 Model Highlights
 
-- Fully configurable ConvNet
-- Custom activation and dropout support
-- BatchNorm toggle
-- Trained using **PyTorch Lightning**
-- Flexible conv filter organization (`--filter_org`)
-- Logs to [Weights & Biases](https://wandb.ai)
-
----
-
-## 🧪 Weights & Biases Integration
+## Weights & Biases Integration
 
 Automatically logs:
 - Training and validation accuracy/loss
