@@ -33,7 +33,7 @@ python main.py --project ConvNet-Nature12K  --dropout 0.3  --batch_size 128  --l
 
 ---
 
-## ⚙ Available Arguments
+## Arguments
 
 | Argument            | Description                                                    | Default         |
 |---------------------|----------------------------------------------------------------|-----------------|
@@ -52,16 +52,6 @@ python main.py --project ConvNet-Nature12K  --dropout 0.3  --batch_size 128  --l
 
 ---
 
-##  Model Properties
-
-- Fully configurable ConvNet
-- Custom activation and dropout support
-- BatchNorm toggle
-- Trained using **PyTorch Lightning**
-- Flexible conv filter organization (`--filter_org`)
-- Logs to [Weights & Biases](https://wandb.ai)
-
----
 
 ## Weights & Biases Integration
 
