@@ -23,6 +23,10 @@ navigate to the directory
 ```
 cd B
 ```
+run the code passing the arguments
+```
+python main.py --project ViT-iNaturalist --dropout 0.2 --batch_size 512  --dense_size 512 --lr 0.0001  --epochs 10
+```
 
 
 ##  Overview
@@ -57,15 +61,7 @@ It uses:
 
 ---
 
-## How to Run
 
-
-
-###  Train the model
-
-```bash
-python main.py --project ViT-iNaturalist --dropout 0.2 --batch_size 512  --dense_size 512 --lr 0.0001  --epochs 10
-```
 
 ---
 
