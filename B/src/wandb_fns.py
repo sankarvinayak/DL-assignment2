@@ -47,14 +47,10 @@ def fine_tune(config=None):
         torch.cuda.manual_seed(3407)
         mean=[0.485, 0.456, 0.406]
         std=[0.229, 0.224, 0.225]
-        train_transform = transforms.Compose([
-            transforms.Resize(256, interpolation=InterpolationMode.BILINEAR),
-            transforms.RandomResizedCrop(224),
-            transforms.RandomHorizontalFlip(),
-            transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=mean, std=std)
-        ])
+        train_transform = transforms.Compose([transforms.Resize(256, interpolation=InterpolationMode.BILINEAR),
+            transforms.RandomResizedCrop(224),transforms.RandomHorizontalFlip(),
+            transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),transforms.ToTensor(),
+            transforms.Normalize(mean=mean, std=std)])
         weights=torchvision.models.ViT_B_16_Weights.DEFAULT
         auto_transforms=weights.transforms()
         early_stop_cb = EarlyStopping(monitor="validation_loss",min_delta=0.00,patience=10,verbose=True,mode="min")
@@ -77,14 +73,10 @@ def fine_tune_manual(project="DL-Addignemt2_B_finetune",dropout=0,batch_size=64,
     """
     mean=[0.485, 0.456, 0.406]#perfomance reduces if these values are changed
     std=[0.229, 0.224, 0.225]
-    train_transform = transforms.Compose([
-        transforms.Resize(256, interpolation=InterpolationMode.BILINEAR), #similar to the one used in the part A of this assignement
+    train_transform = transforms.Compose([transforms.Resize(256, interpolation=InterpolationMode.BILINEAR), #similar to the one used in the part A of this assignement
         transforms.RandomResizedCrop(224), #convert all the image into a fixed size of 224x224x3
-        transforms.RandomHorizontalFlip(),
-        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=mean, std=std)
-    ])
+        transforms.RandomHorizontalFlip(),transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
+        transforms.ToTensor(),transforms.Normalize(mean=mean, std=std)])
     weights=torchvision.models.ViT_B_16_Weights.DEFAULT
     auto_transforms=weights.transforms()
     wandb.login()
@@ -98,13 +90,7 @@ def fine_tune_manual(project="DL-Addignemt2_B_finetune",dropout=0,batch_size=64,
     best_model = VIT_iNaturalist_dense_only.load_from_checkpoint(checkpoint_cb.best_model_path)
     trainer.test(best_model, datamodule=naturalist_DM)
     device='cuda' if torch.cuda.is_available() else 'cpu'
-    naturalist_DM_new = iNaturalistDataModule_with_cls_name(
-    train_dir='src/inaturalist_12K/train',
-    test_dir='src/inaturalist_12K/val',
-    batch_size=batch_size,
-    train_transforms=train_transform,
-    test_transforms=auto_transforms
-    )
+    naturalist_DM_new = iNaturalistDataModule_with_cls_name(train_dir='src/inaturalist_12K/train',test_dir='src/inaturalist_12K/val',batch_size=batch_size,train_transforms=train_transform,test_transforms=auto_transforms)
     naturalist_DM_new.setup()
     class_names = naturalist_DM_new.test_dataset.classes
     log_random_predictions_separate(best_model,naturalist_DM_new.test_dataset,class_names,device=device,num_samples=30,key="Model prediction")
