@@ -10,7 +10,7 @@ cd DL-assignment2
 ```
 install requirements
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 navigate to the directory
 ```
