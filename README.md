@@ -18,6 +18,7 @@ or download the zip file and navigate to the required folder A or B where you ca
 
 
 (For some reason the `ipynb` file is not getting rendered here even if i upload directly or download and upload but if i download and upload it to collab or kaggle is is working for some reasom)
+the collab notebook can be found [here](https://colab.research.google.com/drive/1242oRoCI9uVst-q3BimHxculawks1deC?usp=sharing) 
 
 -----
 [Wandb report](https://wandb.ai/cs24m041-iit-madras/DA6401-Assignment2/reports/DA6401-Assignment-2--VmlldzoxMjAzNTUzNA?accessToken=pvuaifa3kvtlvgihqg4d87n1l6ddmj2w3dri9xvoix5rpxbhui31wd1pkdskjf64) associated can be found here
