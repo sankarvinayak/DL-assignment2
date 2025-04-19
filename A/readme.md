@@ -17,7 +17,11 @@ navigate to the directory
 cd A
 ```
 
+run by passing arguments
 
+```
+python main.py --project project_name --dropout 0.3  --batch_size 128  --lr 0.0001  --dense_size 512  --epoch 30  --activation_fun ReLU  --num_filters 64  --filter_size 3  --filter_org double  --batch_norm   --no-augment
+```
 
 ## Project Structure
 
@@ -40,13 +44,7 @@ cd A
 
 ---
 
-##  How to Run Training
 
-Run the model with any configuration of your choice:
-
-```bash
-python main.py --project project_name --dropout 0.3  --batch_size 128  --lr 0.0001  --dense_size 512  --epoch 30  --activation_fun ReLU  --num_filters 64  --filter_size 3  --filter_org double  --batch_norm   --no-augment
-```
 
 ---
 
