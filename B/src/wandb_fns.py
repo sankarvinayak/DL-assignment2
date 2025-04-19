@@ -75,11 +75,11 @@ def fine_tune_manual(project="DL-Addignemt2_B_finetune",dropout=0,batch_size=64,
     Checkpoint callback save the best model
     once training is completed the prediciton of test model is made from the model which was having least validation loss 
     """
-    mean=[0.485, 0.456, 0.406]
+    mean=[0.485, 0.456, 0.406]#perfomance reduces if these values are changed
     std=[0.229, 0.224, 0.225]
     train_transform = transforms.Compose([
-        transforms.Resize(256, interpolation=InterpolationMode.BILINEAR),
-        transforms.RandomResizedCrop(224),
+        transforms.Resize(256, interpolation=InterpolationMode.BILINEAR), #similar to the one used in the part A of this assignement
+        transforms.RandomResizedCrop(224), #convert all the image into a fixed size of 224x224x3
         transforms.RandomHorizontalFlip(),
         transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
         transforms.ToTensor(),
