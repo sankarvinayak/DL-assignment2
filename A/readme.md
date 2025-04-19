@@ -74,5 +74,6 @@ Automatically logs:
 - Training and validation accuracy/loss
 - Hyperparameters
 - Epoch-wise metrics
+- Prediction of model in randomly selected 30 images from test set
 
 ---
