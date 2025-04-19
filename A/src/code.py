@@ -53,7 +53,7 @@ class iNaturalistDataModule(pl.LightningDataModule):
       return DataLoader(self.test_dataset,batch_size=self.batch_size,shuffle=False,num_workers=self.num_workers)
 
 class iNaturalistModel(pl.LightningModule):
-    def __init__(self, in_channels=3,input_size=(224, 224),dense_size=512,  num_filters_layer: list = [16, 32, 64, 128, 256],filter_size: list = [3, 3, 3, 3, 3], stride=1,  padding=1, num_classes=10,activation=nn.ReLU,dropout_rate=0,optimizer=torch.optim.Adam,lr=0.001,batch_norm=False ):
+    def __init__(self, in_channels=3,input_size=(224, 224),dense_size=512,  num_filters_layer: list = [16, 32, 64, 128, 256],filter_size: list = [3, 3, 3, 3, 3], stride=1,  padding='same', num_classes=10,activation=nn.ReLU,dropout_rate=0,optimizer=torch.optim.Adam,lr=0.001,batch_norm=False ):
         super().__init__()
         self.save_hyperparameters()
         self.optimizer=optimizer
@@ -167,7 +167,7 @@ transform = transforms.Compose([
 naturalist_DM=iNaturalistDataModule(train_dir='/content/inaturalist_12K/train',test_dir='/content/inaturalist_12K/val',train_transforms=transform,test_transforms=transform)
 naturalist_DM.setup()
 
-model=iNaturalistModel(dense_size=4096,num_filters_layer = [32,64,128,256,512],filter_size = [3, 3, 3, 3, 3], stride=1,  padding=1, num_classes=10,activation=torch.nn.ReLU,dropout_rate=0.5,optimizer=torch.optim.Adam,lr=1e-4,batch_norm=True )
+model=iNaturalistModel(dense_size=4096,num_filters_layer = [32,64,128,256,512],filter_size = [3, 3, 3, 3, 3], stride=1,  padding='same', num_classes=10,activation=torch.nn.ReLU,dropout_rate=0.5,optimizer=torch.optim.Adam,lr=1e-4,batch_norm=True )
 trainer=pl.Trainer(max_epochs=30)
 trainer.fit(model,datamodule=naturalist_DM)
 
