@@ -55,14 +55,14 @@ python main.py --project project_name --dropout 0.3  --batch_size 128  --lr 0.00
 | `--project`         | WandB project name                                             | `"default_project"` |
 | `--batch_norm`      | Enable batch normalization                                     | `False`         |
 | `--augment` / `--no-augment` | Enable/disable data augmentation                     | `True`          |
-| `--activation_fun`  | Activation function to use (`ReLU`, `SiLU`, `LeakyReLU`, etc.) | `"SiLU"`        |
+| `--activation_fun`  | Activation function to use (`ReLU`, `SiLU`, `GELU`, `Mish`) | `"SiLU"`        |
 | `--dense_size`      | Size of the fully connected dense layer                        | `1024`          |
 | `--dropout`         | Dropout rate before the final layer                            | `0.5`           |
 | `--epoch`           | Number of training epochs                                      | `50`            |
 | `--lr`              | Learning rate                                                  | `0.0001`        |
 | `--num_filters`     | Number of base filters in conv layers                          | `32`            |
 | `--filter_size`     | Size of convolution kernel                                     | `3`             |
-| `--filter_org`      | Filter organization strategy (`double`, `same`, etc.)          | `"double"`      |
+| `--filter_org`      | Filter organization strategy (`double`, `same`, `half`)          | `"double"`      |
 | `--batch_size`      | Batch size                                                     | `64`            |
 
 ---
