@@ -19,6 +19,8 @@ class iNaturalistModel(pl.LightningModule):
             layers.append(activation())
             layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
             in_channels = num_channel
+            if padding==1:
+                padding=k//2
             conv_h = (size[0] + 2 * padding - k) // stride + 1
             conv_w = (size[1] + 2 * padding - k) // stride + 1
             pool_h = conv_h // 2
