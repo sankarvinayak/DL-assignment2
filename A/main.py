@@ -6,7 +6,7 @@ from src.wandb_fn import wandb_train
 
 if __name__ == "__main__":
     
-    parser = argparse.ArgumentParser(description="Train a model with wandb logging.")
+    parser = argparse.ArgumentParser(description="DL Assignment 2 train from scratch ")
     parser.add_argument("--project", type=str, default="default_project", help="WandB project name")
 
     parser.add_argument("--batch_norm", action="store_true",help="Enable batch_norm")
