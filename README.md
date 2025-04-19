@@ -17,7 +17,7 @@ git clone https://github.com/sankarvinayak/DL-assignment2.git
 or download the zip file and navigate to the required folder A or B where you can find the `main.py` file which acts as an entry point for running the code
 
 
-(For some reason the `ipynb` file is not getting rendered here even if i upload directly or download and upload but if i download and upload it to collab or kaggle is is working for some reasom)
+(For some reason the `ipynb` file is not getting rendered here even if i upload directly or download and upload but if i download and upload it to collab or kaggle is is working for some reason)
 the collab notebook can be found [here](https://colab.research.google.com/drive/1242oRoCI9uVst-q3BimHxculawks1deC?usp=sharing) 
 
 -----
