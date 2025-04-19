@@ -7,6 +7,24 @@
 ---
 
 [Wandb report](https://wandb.ai/cs24m041-iit-madras/DA6401-Assignment2/reports/DA6401-Assignment-2--VmlldzoxMjAzNTUzNA?accessToken=pvuaifa3kvtlvgihqg4d87n1l6ddmj2w3dri9xvoix5rpxbhui31wd1pkdskjf64) associated can be found here
+
+
+## Instructions
+clone the repository
+```
+git clone https://github.com/sankarvinayak/DL-assignment2.git
+cd DL-assignment2
+```
+install requirements
+```
+pip install -r requirements.txt
+```
+navigate to the directory
+```
+cd B
+```
+
+
 ##  Overview
 
 This project fine-tunes a **Vision Transformer (ViT)** model on the [iNaturalist 12K dataset](https://storage.googleapis.com/wandb_datasets/nature_12K.zip) for multi-class image classification.
