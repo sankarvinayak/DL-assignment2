@@ -92,8 +92,8 @@ The training script logs the following to Weights & Biases:
 
 - Training & validation loss
 - Accuracy metrics
-- Random prediction samples with ground truth
-- Model graph and hyperparameters
+- Model hyperparameters
+- Prediction of model in randomly selected 30 images from test set
 
 ---
 
