@@ -59,19 +59,13 @@ def log_random_predictions_separate( model, dataset,class_names,device='cuda', n
 def wandb_train(project="DL-Addignemt2_A",augment=True,activation_fun="SiLU",dense_size=1024,dropout=0.5,epoch=50,lr=0.0001,num_filters=32,filter_size=3,filter_org="double",batch_size=64,batch_norm=True):
    
     if augment: #did try with single augmentations techniques but from experiments it is seen that combining different augmentations techniques helps in improving performance hence a set of augmentations which are commonly used for different model for imagenet dataset(like ViT,VGG,EffNet etc) is used here in wandb initial few runs does have single augmentation technique logged
-        train_transforms = transforms.Compose([
-            transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),#make all the images into same shape 224x224
-            transforms.RandomHorizontalFlip(p=0.5), #with probab
-            transforms.RandomApply([transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1)], p=0.3),
+        train_transforms = transforms.Compose([transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),#make all the images into same shape 224x224
+            transforms.RandomHorizontalFlip(p=0.5), #with probabtransforms.RandomApply([transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1)], p=0.3),
             transforms.RandomRotation(degrees=15),  #randomly rotate the image by a small degree 
-            transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
-            transforms.RandomPerspective(distortion_scale=0.2, p=0.3),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),]) #imagenet mean and standard deviation used in many placess
+            transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),transforms.RandomPerspective(distortion_scale=0.2, p=0.3),
+            transforms.ToTensor(),transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),]) #imagenet mean and standard deviation used in many placess
         test_transforms = transforms.Compose([
-        transforms.Resize(256),            
-        transforms.CenterCrop(224),        
-        transforms.ToTensor(),
+        transforms.Resize(256), transforms.CenterCrop(224),   transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], #similar to default transforms of ViT which is used in the part B and seems to give better perfomance than using .5 directly 
                             std=[0.229, 0.224, 0.225]), # for the train set Computed Mean: [0.47089460492134094, 0.45923930406570435, 0.3884953558444977]  Std: [0.19317267835140228, 0.18763333559036255, 0.1841067522764206] which is close enough hence using these
     ])
@@ -123,13 +117,7 @@ def wandb_train(project="DL-Addignemt2_A",augment=True,activation_fun="SiLU",den
     trainer.test(best_model, datamodule=naturalist_DM)
     # trainer.test(best_model, datamodule=naturalist_DM)
     device='cuda' if torch.cuda.is_available() else 'cpu'
-    naturalist_DM_new = iNaturalistDataModule_with_cls_name(
-    train_dir='src/inaturalist_12K/train',
-    test_dir='src/inaturalist_12K/val',
-    batch_size=batch_size,
-    train_transforms=train_transforms,
-    test_transforms=test_transforms
-    )
+    naturalist_DM_new = iNaturalistDataModule_with_cls_name(train_dir='src/inaturalist_12K/train',test_dir='src/inaturalist_12K/val', batch_size=batch_size, train_transforms=train_transforms,test_transforms=test_transforms)
     naturalist_DM_new.setup()
     class_names = naturalist_DM_new.test_dataset.classes
     log_random_predictions_separate(best_model,naturalist_DM_new.test_dataset,class_names,device=device,num_samples=30,key="Model prediction")
