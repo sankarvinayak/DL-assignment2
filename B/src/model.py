@@ -71,7 +71,7 @@ class VIT_iNaturalist_dense_only(pl.LightningModule):
         #     "optimizer": optimizer,
         #     "lr_scheduler": {
         #         "scheduler": scheduler,
-        #         "monitor": "validation_loss",  # name of metric to monitor
+        #         "monitor": "validation_loss", 
         #         "interval": "epoch",
         #         "frequency": 1
         #     }
