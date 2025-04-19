@@ -73,7 +73,7 @@ def wandb_train(project="DL-Addignemt2_A",augment=True,activation_fun="SiLU",den
         transforms.CenterCrop(224),        
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], #similar to default transforms of ViT which is used in the part B and seems to give better perfomance than using .5 directly 
-                            std=[0.229, 0.224, 0.225]),
+                            std=[0.229, 0.224, 0.225]), # for the train set Computed Mean: [0.47089460492134094, 0.45923930406570435, 0.3884953558444977]  Std: [0.19317267835140228, 0.18763333559036255, 0.1841067522764206] which is close enough hence using these
     ])
     else:
       train_transforms = transforms.Compose([
