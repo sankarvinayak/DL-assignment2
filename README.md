@@ -9,7 +9,12 @@ This directory contain information about training the model using pretrained Vis
 
 -----
 Before trying the code install the requirements in `requirements.txt`
-
+## instructions
+for trying the code first clone the repository
+```
+git clone https://github.com/sankarvinayak/DL-assignment2.git 
+```
+or download the zip file and navigate to the required folder A or B where you can find the `main.py` file which acts as an entry point for running the code
 
 -----
 [Wandb report](https://wandb.ai/cs24m041-iit-madras/DA6401-Assignment2/reports/DA6401-Assignment-2--VmlldzoxMjAzNTUzNA?accessToken=pvuaifa3kvtlvgihqg4d87n1l6ddmj2w3dri9xvoix5rpxbhui31wd1pkdskjf64) associated can be found here
