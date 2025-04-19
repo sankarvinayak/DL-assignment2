@@ -15,14 +15,14 @@ if __name__ == "__main__":
     parser.add_argument("--no-augment", dest="augment", action="store_false",help="Disable data augmentation")
     parser.set_defaults(augment=True)
 
-    parser.add_argument("--activation_fun", type=str, default="SiLU",help="Activation function to use (default: SiLU)")
+    parser.add_argument("--activation_fun",type=str,choices=["ReLU", "GELU", "SiLU", "Mish"],default="SiLU",help="Activation function to use (choices: ReLU, GELU, SiLU, Mish; default: SiLU)")
     parser.add_argument("--dense_size", type=int, default=1024,help="Size of the dense layer (default: 1024)")
     parser.add_argument("--dropout", type=float, default=0.5,help="Dropout rate (default: 0.5)")
     parser.add_argument("--epoch", type=int, default=50,help="Number of training epochs (default: 50)")
     parser.add_argument("--lr", type=float, default=0.0001,help="Learning rate (default: 0.0001)")
     parser.add_argument("--num_filters", type=int, default=32,help="Number of filters in conv layers (default: 32)")
     parser.add_argument("--filter_size", type=int, default=3,help="Size of the convolutional filter (default: 3)")
-    parser.add_argument("--filter_org", type=str, default="double",help="Filter organization strategy (default: double)")
+    parser.add_argument("--filter_org",type=str,choices=["double", "half", "same"],default="double",help="Filter organization strategy (choices: double, half, same; default: double)")
     parser.add_argument("--batch_size", type=int, default=64,help="Batch size for training (default: 64)")
     args = parser.parse_args()
 

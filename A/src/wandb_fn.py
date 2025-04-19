@@ -94,10 +94,15 @@ def wandb_train(project="DL-Addignemt2_A",augment=True,activation_fun="SiLU",den
       activation=torch.nn.Mish
    
     wandb.login()
-    num_filters_layer=[num_filters,num_filters*2,num_filters*4,num_filters*8,num_filters*16]if filter_org=="double" else [num_filters]*5
+    if filter_org=="double":
+      num_filters_layer=[num_filters,num_filters*2,num_filters*4,num_filters*8,num_filters*16]
+    elif filter_org=="half":
+      num_filters_layer=[num_filters,num_filters//2,num_filters//4,num_filters//8,num_filters//16]
+    else:
+       num_filters_layer=[num_filters]*5
     early_stop_cb = EarlyStopping(monitor="validation_loss",min_delta=0.00,patience=10,verbose=True,mode="min") #early stopping callback which will terminate the training if the validation does not decrease for 10 consecutive steps
     checkpoint_cb = ModelCheckpoint(monitor="validation_loss", mode="min",save_top_k=1,verbose=True,dirpath="checkpoints/",filename="best-model") #save the model when the loss it at lowest and finally return the result of this best model
-    num_filters_layer=[num_filters,num_filters*2,num_filters*4,num_filters*8,num_filters*16]
+    # num_filters_layer=[num_filters,num_filters*2,num_filters*4,num_filters*8,num_filters*16]
     # num_filters_layer=[num_filters]*5
     # if len(filter_size)==1:
     filter_sizes=[filter_size]*5
